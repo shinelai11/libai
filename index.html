@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F6EFE8" />
+<title>Her · 女性形象 App 高保真原型</title>
+<style>
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root{
+  --bg:#F7F1EA;
+  --bg-glow-1:#FBE3DE;
+  --bg-glow-2:#E9DFF4;
+  --ink:#2C2230;
+  --ink-soft:#6B5F70;
+  --ink-faint:#9C909F;
+  --card:#FFFFFF;
+  --card-2:#FBF5F0;
+  --line:rgba(44,34,48,.09);
+  --rose:#D46C7D;
+  --rose-deep:#B14F63;
+  --rose-soft:#F7DFE3;
+  --plum:#432C41;
+  --plum-soft:#EDE3EC;
+  --gold:#C8A055;
+  --sage:#7E9B8A;
+  --shadow-lg:0 46px 90px -34px rgba(64,30,52,.55);
+  --shadow-sm:0 10px 24px -16px rgba(64,30,52,.45);
+  --radius:22px;
+  --serif:"Songti SC","Noto Serif SC","Noto Serif CJK SC","Source Han Serif SC",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Noto Sans CJK SC",Inter,system-ui,sans-serif;
+}
+html[data-theme="dark"]{
+  --bg:#171219;
+  --bg-glow-1:#2B1B29;
+  --bg-glow-2:#1E1A2E;
+  --ink:#F5EEF3;
+  --ink-soft:#BAACBB;
+  --ink-faint:#8A7C8C;
+  --card:#231C27;
+  --card-2:#2B2130;
+  --line:rgba(255,255,255,.09);
+  --rose:#E48A9A;
+  --rose-deep:#F0A3B0;
+  --rose-soft:#3B2530;
+  --plum:#F1E6EF;
+  --plum-soft:#332534;
+  --gold:#D9B471;
+  --sage:#93AD9E;
+  --shadow-lg:0 46px 90px -30px rgba(0,0,0,.75);
+  --shadow-sm:0 10px 24px -16px rgba(0,0,0,.8);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100dvh;
+  display:grid;
+  place-items:center;
+  padding:28px 24px;
+  font-family:var(--sans);
+  color:var(--ink);
+  background:
+    radial-gradient(1100px 640px at 8% -10%, var(--bg-glow-1) 0%, transparent 62%),
+    radial-gradient(900px 620px at 100% 108%, var(--bg-glow-2) 0%, transparent 58%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased;
+  transition:background-color .4s ease,color .4s ease;
+}
+h1,h2,h3,p{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+ul{margin:0;padding:0;list-style:none}
+svg{display:block}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:8px}
+
+/* ============================================================
+   Showcase layout
+   ============================================================ */
+.showcase{
+  width:100%;
+  max-width:1180px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:clamp(32px,6vw,88px);
+}
+.intro{max-width:460px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:600;
+}
+.eyebrow::before{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--rose);box-shadow:0 0 0 5px var(--rose-soft);
+}
+.intro h1{
+  margin:18px 0 16px;
+  font-family:var(--serif);
+  font-size:clamp(34px,4.4vw,52px);
+  line-height:1.14;
+  letter-spacing:.01em;
+  font-weight:600;
+}
+.intro h1 em{
+  font-style:normal;
+  color:var(--rose-deep);
+}
+.intro p{
+  font-size:14.5px;line-height:1.8;color:var(--ink-soft);
+  max-width:40ch;
+}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.meta span{
+  font-size:12px;color:var(--ink-soft);
+  border:1px solid var(--line);
+  background:color-mix(in srgb,var(--card) 70%,transparent);
+  padding:6px 11px;border-radius:999px;
+  backdrop-filter:blur(6px);
+}
+.swatches{display:flex;align-items:center;gap:10px;margin-top:28px}
+.swatches i{
+  width:26px;height:26px;border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--card) 70%,transparent);
+  box-shadow:var(--shadow-sm);
+}
+.swatches small{font-size:11.5px;color:var(--ink-faint);letter-spacing:.06em;margin-left:4px}
+
+/* ============================================================
+   Device frame
+   ============================================================ */
+.device{
+  position:relative;
+  flex:none;
+  padding:11px;
+  border-radius:56px;
+  background:linear-gradient(160deg,#221A26,#0D0A12 55%,#241B26);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 0 0 1px rgba(255,255,255,.14),
+    inset 0 1px 1px rgba(255,255,255,.28);
+}
+.device::after{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(140deg,rgba(255,255,255,.22),transparent 38%,transparent 62%,rgba(255,255,255,.10));
+  mix-blend-mode:screen;opacity:.6;
+}
+.phone{
+  position:relative;
+  width:390px;
+  height:844px;
+  max-height:calc(100dvh - 78px);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border-radius:46px;
+  background:var(--bg);
+  color:var(--ink);
+  transition:background-color .4s ease;
+}
+.island{
+  position:absolute;top:11px;left:50%;transform:translateX(-50%);
+  width:108px;height:29px;border-radius:999px;background:#08060B;z-index:40;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:11px;
+}
+.island::after{
+  content:"";width:8px;height:8px;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#39405A,#10121C 70%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.statusbar{
+  flex:none;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:17px 26px 4px;
+  font-size:13px;font-weight:650;letter-spacing:.02em;
+  color:var(--ink);
+}
+.statusbar .icons{display:flex;align-items:center;gap:5px}
+.statusbar .icons svg{width:16px;height:11px}
+
+/* ============================================================
+   App chrome
+   ============================================================ */
+.app{position:relative;flex:1;min-height:0;overflow:hidden}
+.screen{
+  position:absolute;inset:0;
+  padding:10px 22px 110px;
+  overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:none;
+  opacity:0;visibility:hidden;
+  transform:translateY(12px) scale(.995);
+  transition:opacity .32s ease,transform .32s ease,visibility .32s;
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.is-active{opacity:1;visibility:visible;transform:none}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:6px 0 20px;
+}
+.greeting small{
+  display:block;font-size:12px;letter-spacing:.06em;color:var(--ink-faint);margin-bottom:4px;
+}
+.greeting h1{
+  font-family:var(--serif);font-size:24px;font-weight:600;letter-spacing:.02em;line-height:1.2;
+}
+.avatar-btn{
+  position:relative;width:44px;height:44px;border-radius:50%;
+  padding:0;overflow:hidden;
+  border:2px solid var(--card);
+  box-shadow:var(--shadow-sm);
+  background:var(--rose-soft);
+}
+.avatar-btn svg{width:100%;height:100%}
+.avatar-btn .dot{
+  position:absolute;top:1px;right:1px;width:9px;height:9px;border-radius:50%;
+  background:var(--rose);border:2px solid var(--card);
+}
+
+.screen-head{margin:4px 0 20px}
+.screen-head .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.screen-head h2{
+  font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:.02em;
+}
+.screen-head p{margin-top:6px;font-size:12.5px;color:var(--ink-faint);line-height:1.6}
+.icon-btn{
+  flex:none;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--card);border:1px solid var(--line);
+  color:var(--ink-soft);
+  transition:transform .18s ease,color .18s ease;
+}
+.icon-btn:hover{color:var(--rose-deep);transform:translateY(-1px)}
+.icon-btn svg{width:17px;height:17px}
+
+/* ============================================================
+   Hero (home)
+   ============================================================ */
+.hero{
+  position:relative;overflow:hidden;
+  border-radius:28px;
+  padding:22px 22px 24px;
+  min-height:214px;
+  color:#FCEFF1;
+  background:
+    radial-gradient(120% 130% at 92% 8%, #8B4A63 0%, transparent 55%),
+    linear-gradient(150deg,#55334C 0%,#3A2338 58%,#2C1A2B 100%);
+  box-shadow:0 22px 40px -26px rgba(64,30,52,.9);
+  isolation:isolate;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 82% 30%, rgba(255,214,197,.35), transparent 46%),
+    radial-gradient(circle at 12% 108%, rgba(200,160,85,.28), transparent 52%);
+  z-index:-1;
+}
+.hero .tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 10px;border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(6px);
+}
+.hero h3{
+  margin:14px 0 10px;
+  font-family:var(--serif);font-size:26px;line-height:1.34;font-weight:600;
+  letter-spacing:.02em;max-width:9.2em;
+}
+.hero p{font-size:12px;line-height:1.7;color:rgba(252,239,241,.72);max-width:15em}
+.hero .cta{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:16px;padding:9px 15px;border-radius:999px;
+  font-size:12.5px;font-weight:600;
+  color:#3B2333;background:#F8E6DF;
+  box-shadow:0 10px 20px -12px rgba(0,0,0,.7);
+  transition:transform .18s ease,background-color .18s ease;
+}
+.hero .cta:hover{transform:translateY(-1px);background:#FFF3ED}
+.hero .cta svg{width:13px;height:13px}
+.hero-art{
+  position:absolute;right:-26px;bottom:-16px;width:190px;height:236px;
+  z-index:-1;
+  filter:drop-shadow(0 18px 26px rgba(20,8,18,.45));
+  opacity:.96;
+  -webkit-mask-image:linear-gradient(to right,transparent 4%,rgba(0,0,0,.4) 38%,#000 66%);
+  mask-image:linear-gradient(to right,transparent 4%,rgba(0,0,0,.4) 38%,#000 66%);
+}
+.hero-art svg{width:100%;height:100%}
+.hero .spark{position:absolute;color:rgba(255,238,224,.75)}
+.hero .spark.a{top:26px;right:120px;width:14px;height:14px}
+.hero .spark.b{top:78px;right:34px;width:9px;height:9px;opacity:.6}
+
+/* ============================================================
+   Section head + stats
+   ============================================================ */
+.section-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin:26px 2px 13px;
+}
+.section-head h3{font-family:var(--serif);font-size:16.5px;font-weight:600;letter-spacing:.03em}
+.section-head button{
+  font-size:11.5px;color:var(--ink-faint);display:inline-flex;align-items:center;gap:3px;
+  transition:color .18s ease;
+}
+.section-head button:hover{color:var(--rose-deep)}
+.section-head button svg{width:11px;height:11px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:12px 11px 11px;
+  box-shadow:var(--shadow-sm);
+}
+.stat .ico{
+  width:26px;height:26px;border-radius:9px;display:grid;place-items:center;
+  background:var(--rose-soft);color:var(--rose-deep);margin-bottom:9px;
+}
+.stat .ico svg{width:14px;height:14px}
+.stat .ico.sage{background:color-mix(in srgb,var(--sage) 18%,transparent);color:var(--sage)}
+.stat .ico.gold{background:color-mix(in srgb,var(--gold) 20%,transparent);color:var(--gold)}
+.stat b{display:block;font-size:15px;letter-spacing:.01em}
+.stat b span{font-size:10px;font-weight:500;color:var(--ink-faint);margin-left:2px}
+.stat small{display:block;margin-top:3px;font-size:10.5px;color:var(--ink-faint)}
+.bar{height:4px;border-radius:99px;background:var(--line);margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--rose);width:var(--v,50%)}
+.bar i.sage{background:var(--sage)}
+.bar i.gold{background:var(--gold)}
+
+/* ============================================================
+   Horizontal look cards
+   ============================================================ */
+.hscroll{
+  display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:2px 2px 6px;margin:0 -2px;
+  scrollbar-width:none;
+}
+.hscroll::-webkit-scrollbar{display:none}
+.look{
+  position:relative;flex:none;width:132px;scroll-snap-align:start;
+  border-radius:20px;overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+  text-align:left;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.look:hover{transform:translateY(-3px);box-shadow:0 16px 26px -18px rgba(64,30,52,.6)}
+.look .thumb{
+  position:relative;height:144px;display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--t1),var(--t2));
+}
+.look .thumb > svg{width:62px;height:82px;color:rgba(255,255,255,.92)}
+.look .heart{
+  position:absolute;top:8px;right:8px;width:27px;height:27px;border-radius:50%;
+  display:grid;place-items:center;color:#fff;
+  background:rgba(255,255,255,.22);backdrop-filter:blur(4px);
+  transition:transform .2s ease,color .2s ease,background-color .2s ease;
+}
+.look .heart svg{width:14px;height:14px}
+.look .heart[aria-pressed="true"]{background:#fff;color:var(--rose)}
+.look .heart[aria-pressed="true"] svg{animation:pop .35s ease}
+.look .cap{padding:10px 11px 12px}
+.look .cap b{display:block;font-size:12.5px;font-weight:650;letter-spacing:.01em}
+.look .cap small{display:block;margin-top:2px;font-size:10px;color:var(--ink-faint)}
+@keyframes pop{0%{transform:scale(.7)}55%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* ============================================================
+   Quote
+   ============================================================ */
+.quote{
+  margin-top:22px;padding:20px 20px 18px;
+  border-radius:22px;
+  background:var(--card-2);
+  border:1px dashed color-mix(in srgb,var(--gold) 45%,transparent);
+  position:relative;
+}
+.quote svg{width:20px;height:20px;color:var(--gold);opacity:.8}
+.quote p{
+  margin-top:10px;font-family:var(--serif);font-size:14px;line-height:1.9;
+  letter-spacing:.03em;color:var(--ink-soft);
+}
+.quote cite{
+  display:block;margin-top:8px;font-style:normal;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink-faint);text-transform:uppercase;
+}
+
+/* ============================================================
+   Tab bar
+   ============================================================ */
+.tabbar{
+  position:absolute;left:0;right:0;bottom:0;z-index:30;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  padding:9px 14px calc(12px + env(safe-area-inset-bottom));
+  background:color-mix(in srgb,var(--bg) 96%,transparent);
+  backdrop-filter:blur(18px) saturate(1.3);
+  border-top:1px solid var(--line);
+}
+.tab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:5px 0;border-radius:14px;
+  font-size:9.5px;letter-spacing:.06em;
+  color:var(--ink-faint);
+  transition:color .2s ease;
+}
+.tab svg{width:21px;height:21px;transition:transform .2s ease}
+.tab:hover{color:var(--ink-soft)}
+.tab[aria-selected="true"]{color:var(--rose-deep);font-weight:650}
+.tab[aria-selected="true"] svg{transform:translateY(-1px)}
+.tab .pip{
+  width:4px;height:4px;border-radius:50%;background:currentColor;
+  opacity:0;transition:opacity .2s ease;
+}
+.tab[aria-selected="true"] .pip{opacity:1}
+/* ============================================================
+   Profile / 形象档案
+   ============================================================ */
+.portrait-card{
+  position:relative;border-radius:26px;overflow:hidden;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--rose-soft),var(--card));
+  box-shadow:var(--shadow-sm);
+}
+.portrait-card .art{width:100%;display:block}
+.portrait-card .art svg{width:100%;height:100%;display:block}
+.portrait-card .badge{
+  position:absolute;left:12px;top:12px;
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:5px 9px;border-radius:999px;
+  background:rgba(24,14,22,.42);color:#FBEAEE;
+  border:1px solid rgba(255,255,255,.28);
+  backdrop-filter:blur(8px);
+}
+.portrait-card .badge svg{width:10px;height:10px}
+.portrait-card .cap{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:38px 16px 14px;
+  background:linear-gradient(transparent,rgba(28,16,26,.72));
+  color:#FFF2F4;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+}
+.portrait-card .cap b{
+  display:block;font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:.04em;
+}
+.portrait-card .cap small{display:block;margin-top:3px;font-size:10.5px;opacity:.78;letter-spacing:.04em}
+.portrait-card .cap .num{font-family:var(--serif);font-size:22px;line-height:1;opacity:.9}
+
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag-chip{
+  font-size:10.5px;padding:5px 10px;border-radius:999px;
+  color:var(--rose-deep);background:var(--rose-soft);
+  border:1px solid color-mix(in srgb,var(--rose) 22%,transparent);
+}
+.tag-chip.muted{color:var(--ink-soft);background:var(--card);border-color:var(--line)}
+
+.palette{display:flex;gap:8px;margin-top:12px}
+.swatch{
+  flex:1;border-radius:14px;padding:0;overflow:hidden;
+  border:1px solid var(--line);background:var(--card);
+  transition:transform .18s ease;
+}
+.swatch:hover{transform:translateY(-2px)}
+.swatch i{display:block;height:38px;background:var(--c)}
+.swatch span{display:block;font-size:8.5px;letter-spacing:.03em;color:var(--ink-faint);padding:5px 0 6px}
+
+.info-list{
+  margin-top:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  overflow:hidden;
+}
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 14px;font-size:12px;
+}
+.info-row + .info-row{border-top:1px solid var(--line)}
+.info-row dt{color:var(--ink-faint);font-size:11px;letter-spacing:.04em}
+.info-row dd{margin:0;font-weight:600;letter-spacing:.02em;text-align:right}
+.info-row dd em{font-style:normal;color:var(--ink-faint);font-weight:400;font-size:11px;margin-left:6px}
+
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:16px;padding:13px;
+  border-radius:16px;font-size:13px;font-weight:650;letter-spacing:.04em;
+  color:#FFF4F5;
+  background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+  box-shadow:0 16px 26px -18px var(--rose-deep);
+  transition:transform .18s ease,filter .18s ease;
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.btn svg{width:15px;height:15px}
+.btn.ghost{
+  margin-top:9px;color:var(--ink-soft);background:var(--card);
+  border:1px solid var(--line);box-shadow:none;
+}
+/* ============================================================
+   日程
+   ============================================================ */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:16px}
+.day{
+  padding:9px 0 8px;border-radius:14px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  color:var(--ink-faint);font-size:9.5px;letter-spacing:.04em;
+  border:1px solid transparent;
+  transition:background-color .18s ease,color .18s ease,transform .18s ease;
+}
+.day b{font-size:12.5px;font-weight:600;color:var(--ink)}
+.day:hover{background:var(--card)}
+.day[aria-pressed="true"]{background:var(--plum);box-shadow:var(--shadow-sm)}
+.day[aria-pressed="true"] b{color:var(--bg)}
+html[data-theme="dark"] .day[aria-pressed="true"]{background:var(--rose-deep)}
+html[data-theme="dark"] .day[aria-pressed="true"] b{color:#2A1620}
+.day .mark{width:4px;height:4px;border-radius:50%;background:var(--rose);opacity:.85}
+.day .mark.off{opacity:0}
+
+.progress-card{
+  display:flex;align-items:center;gap:16px;
+  padding:16px;border-radius:22px;
+  background:linear-gradient(140deg,var(--card),var(--card-2));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);
+}
+.ring{position:relative;flex:none;width:74px;height:74px}
+.ring svg{transform:rotate(-90deg);width:74px;height:74px}
+.ring .track{stroke:var(--line)}
+.ring .val{
+  stroke:var(--rose);stroke-linecap:round;
+  transition:stroke-dashoffset .6s cubic-bezier(.3,.8,.3,1);
+}
+.ring b{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:1px;
+  font-size:15px;letter-spacing:.01em;
+}
+.ring b small{font-size:9px;font-weight:500;color:var(--ink-faint);margin-left:1px}
+.progress-copy strong{display:block;font-family:var(--serif);font-size:16px;font-weight:600;letter-spacing:.02em}
+.progress-copy span{display:block;margin-top:5px;font-size:11px;color:var(--ink-faint);line-height:1.6}
+
+.tasks{margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.task{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  padding:13px 14px;border-radius:18px;
+  background:var(--card);border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);
+  transition:opacity .2s ease,transform .18s ease,border-color .18s ease;
+}
+.task:hover{transform:translateY(-1px)}
+.task .check{
+  flex:none;width:21px;height:21px;border-radius:50%;
+  border:1.5px solid color-mix(in srgb,var(--ink-faint) 55%,transparent);
+  display:grid;place-items:center;color:transparent;
+  transition:background-color .18s ease,border-color .18s ease,color .18s ease;
+}
+.task .check svg{width:11px;height:11px}
+.task .body{flex:1;min-width:0}
+.task .body b{display:block;font-size:12.5px;font-weight:600;letter-spacing:.01em}
+.task .body small{display:block;margin-top:2px;font-size:10px;color:var(--ink-faint)}
+.task .time{
+  flex:none;font-size:10.5px;color:var(--ink-faint);letter-spacing:.03em;
+  font-variant-numeric:tabular-nums;
+}
+.task[aria-checked="true"]{opacity:.62}
+.task[aria-checked="true"] .body b{text-decoration:line-through;text-decoration-color:var(--ink-faint)}
+.task[aria-checked="true"] .check{background:var(--rose);border-color:var(--rose);color:#fff}
+.task[aria-checked="true"] .check svg{animation:pop .3s ease}
+/* ============================================================
+   我的
+   ============================================================ */
+.profile-head{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:14px;
+  padding:18px;border-radius:24px;
+  background:
+    radial-gradient(120% 160% at 100% 0%, color-mix(in srgb,var(--rose) 42%,transparent), transparent 58%),
+    linear-gradient(140deg,var(--plum),color-mix(in srgb,var(--plum) 72%,#000));
+  color:#FBEDF1;
+  box-shadow:0 20px 36px -26px rgba(48,20,40,.9);
+}
+html[data-theme="dark"] .profile-head{
+  background:
+    radial-gradient(120% 160% at 100% 0%, color-mix(in srgb,var(--rose) 30%,transparent), transparent 58%),
+    linear-gradient(140deg,#2C1F2A,#1B1420);
+  border:1px solid var(--line);
+}
+.profile-head .avatar{
+  flex:none;width:58px;height:58px;border-radius:50%;overflow:hidden;
+  border:2px solid rgba(255,255,255,.38);background:var(--rose-soft);
+}
+.profile-head .avatar svg{width:100%;height:100%}
+.profile-head .who b{display:block;font-family:var(--serif);font-size:18px;letter-spacing:.04em}
+.profile-head .who small{display:block;margin-top:4px;font-size:10.5px;opacity:.75;letter-spacing:.04em}
+.profile-head .vip{
+  display:inline-flex;align-items:center;gap:4px;margin-top:7px;
+  font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:999px;
+  color:#3A2530;background:linear-gradient(120deg,#EBD3A4,#C8A055);
+}
+.profile-head .vip svg{width:9px;height:9px}
+
+.stat-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  margin-top:14px;padding:14px 0;
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+}
+.stat-row div{text-align:center;position:relative}
+.stat-row div + div::before{
+  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:24px;background:var(--line);
+}
+.stat-row b{display:block;font-family:var(--serif);font-size:17px;font-weight:600}
+.stat-row small{display:block;margin-top:3px;font-size:9.5px;color:var(--ink-faint);letter-spacing:.06em}
+
+.menu{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.menu-row{
+  display:flex;align-items:center;gap:12px;width:100%;
+  padding:12px 14px;font-size:12.5px;text-align:left;
+  transition:background-color .18s ease;
+}
+.menu-row:hover{background:var(--card-2)}
+.menu-row + .menu-row{border-top:1px solid var(--line)}
+.menu-row .mi{
+  flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+  background:var(--card-2);color:var(--ink-soft);
+}
+.menu-row .mi svg{width:14px;height:14px}
+.menu-row .label{flex:1}
+.menu-row .label small{display:block;margin-top:1px;font-size:9.5px;color:var(--ink-faint)}
+.menu-row .chev{width:14px;height:14px;color:var(--ink-faint)}
+.menu-row .val{font-size:10.5px;color:var(--ink-faint)}
+
+.switch{
+  flex:none;width:40px;height:23px;border-radius:999px;
+  background:color-mix(in srgb,var(--ink-faint) 34%,transparent);
+  padding:2px;transition:background-color .22s ease;
+}
+.switch i{
+  display:block;width:19px;height:19px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.22);
+  transition:transform .22s cubic-bezier(.3,.8,.3,1);
+}
+.switch[aria-checked="true"]{background:var(--rose)}
+.switch[aria-checked="true"] i{transform:translateX(17px)}
+
+.footer-note{
+  text-align:center;margin:20px 0 6px;
+  font-size:9.5px;letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase;
+}
+
+/* ============================================================
+   Toast
+   ============================================================ */
+.toast{
+  position:absolute;left:50%;bottom:96px;z-index:50;
+  transform:translate(-50%,14px);
+  max-width:82%;
+  padding:9px 16px;border-radius:999px;
+  font-size:11.5px;letter-spacing:.03em;white-space:nowrap;
+  color:var(--bg);background:color-mix(in srgb,var(--ink) 92%,transparent);
+  box-shadow:0 14px 26px -14px rgba(0,0,0,.6);
+  opacity:0;pointer-events:none;
+  transition:opacity .24s ease,transform .24s ease;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:560px){
+  body{display:block;padding:0;background:var(--bg)}
+  .showcase{display:block;width:100%;max-width:none}
+  .device{width:100%;padding:0;border-radius:0;box-shadow:none;background:var(--bg);height:100dvh}
+  .device::after{display:none}
+  .phone{width:100%;height:100dvh;max-height:none;border-radius:0}
+  .island{display:none}
+  .statusbar{padding-top:calc(12px + env(safe-area-inset-top))}
+  .screen{padding-left:20px;padding-right:20px}
+}
+@media (max-width:1080px){
+  .showcase{grid-template-columns:1fr;justify-items:center}
+  .intro{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="showcase">
+  <aside class="intro">
+    <span class="eyebrow">Her Studio · UI Prototype</span>
+    <h1>为她而设计的<br /><em>一眼心动</em>。</h1>
+    <p>
+      Her 是一款围绕「女性形象管理」的移动端应用概念原型。从形象档案、色彩诊断到日常日程，
+      用柔和的玫瑰灰与衬线字体，营造温柔而有力量的视觉语气。
+    </p>
+    <div class="meta">
+      <span>Mobile · 390 × 844</span>
+      <span>4 个可交互页面</span>
+      <span>浅色 / 深色</span>
+    </div>
+    <div class="swatches" aria-label="主色板">
+      <i style="background:#D46C7D"></i>
+      <i style="background:#432C41"></i>
+      <i style="background:#C8A055"></i>
+      <i style="background:#7E9B8A"></i>
+      <i style="background:#F7F1EA"></i>
+      <small>ROSE · PLUM · GOLD · SAGE</small>
+    </div>
+  </aside>
+
+  <div class="device">
+    <div class="phone">
+      <div class="island" aria-hidden="true"></div>
+
+      <div class="statusbar">
+        <span>9:41</span>
+        <div class="icons" aria-hidden="true">
+          <svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="7.5" width="3" height="4.5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
+          <svg viewBox="0 0 18 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 4.2a11 11 0 0 1 15 0"/><path d="M4.4 7a7 7 0 0 1 9.2 0"/><path d="M7.3 9.8a3 3 0 0 1 3.4 0"/></svg>
+          <svg viewBox="0 0 26 12" fill="none"><rect x=".7" y=".7" width="21" height="10.6" rx="3" stroke="currentColor" stroke-width="1.2" opacity=".45"/><rect x="2.5" y="2.5" width="16" height="7" rx="1.8" fill="currentColor"/><path d="M23.4 4.2v3.6c1.2-.3 1.9-1 1.9-1.8s-.7-1.5-1.9-1.8Z" fill="currentColor" opacity=".45"/></svg>
+        </div>
+      </div>
+
+      <!-- ===== SVG library ===== -->
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="pBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F9DCD5"/>
+            <stop offset=".55" stop-color="#EFC9CF"/>
+            <stop offset="1" stop-color="#DCB8D7"/>
+          </linearGradient>
+          <linearGradient id="pSkin" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F8D6BE"/>
+            <stop offset="1" stop-color="#EBBE9F"/>
+          </linearGradient>
+          <linearGradient id="pHair" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#412733"/>
+            <stop offset="1" stop-color="#20121B"/>
+          </linearGradient>
+          <linearGradient id="pDress" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C2556B"/>
+            <stop offset="1" stop-color="#8B3350"/>
+          </linearGradient>
+          <linearGradient id="pGlow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FFF4E8" stop-opacity=".85"/>
+            <stop offset="1" stop-color="#FFF4E8" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <symbol id="portrait" viewBox="0 0 240 300">
+          <rect width="240" height="300" fill="url(#pBg)"/>
+          <circle cx="122" cy="116" r="98" fill="#FFFFFF" opacity=".26"/>
+          <circle cx="204" cy="52" r="30" fill="#FFFFFF" opacity=".18"/>
+
+          <!-- hair volume -->
+          <path d="M120 24c-50 0-70 38-68 86 1 30-8 60-22 84 26 14 56 3 68-19v-25h44v25c12 22 42 33 68 19-14-24-23-54-22-84 2-48-18-86-68-86Z" fill="url(#pHair)"/>
+
+          <!-- dress -->
+          <path d="M6 300c6-58 48-90 90-97h48c42 7 84 39 90 97Z" fill="url(#pDress)"/>
+          <path d="M84 208c10-9 24-13 36-13s26 4 36 13c-8 18-22 28-36 28s-28-10-36-28Z" fill="#F7DED6" opacity=".2"/>
+
+          <!-- neck -->
+          <path d="M101 148h38v48c0 15-38 15-38 0Z" fill="#E8B694"/>
+          <path d="M101 148h38v15c-12 8-26 8-38 0Z" fill="#D9A181" opacity=".8"/>
+
+          <!-- ears -->
+          <ellipse cx="74" cy="114" rx="8" ry="11" fill="url(#pSkin)"/>
+          <ellipse cx="166" cy="114" rx="8" ry="11" fill="url(#pSkin)"/>
+
+          <!-- face -->
+          <path d="M120 52c-26 0-46 20-46 50 0 31 19 57 46 63 27-6 46-32 46-63 0-30-20-50-46-50Z" fill="url(#pSkin)"/>
+
+          <!-- blush -->
+          <ellipse cx="94" cy="131" rx="10" ry="6" fill="#E58C86" opacity=".3"/>
+          <ellipse cx="146" cy="131" rx="10" ry="6" fill="#E58C86" opacity=".3"/>
+
+          <!-- brows -->
+          <path d="M90 101c6-5 15-5 21 0" stroke="#4A2C34" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M129 101c6-5 15-5 21 0" stroke="#4A2C34" stroke-width="3" stroke-linecap="round" fill="none"/>
+
+          <!-- eyes -->
+          <path d="M92 112c5-7 15-7 20 0-5 7-15 7-20 0Z" fill="#FFF8F5"/>
+          <circle cx="102" cy="112" r="4.2" fill="#3A2230"/>
+          <circle cx="103.3" cy="110.5" r="1.3" fill="#fff"/>
+          <path d="M91 111c6-8 16-8 22 0" stroke="#3A2230" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <path d="M128 112c5-7 15-7 20 0-5 7-15 7-20 0Z" fill="#FFF8F5"/>
+          <circle cx="138" cy="112" r="4.2" fill="#3A2230"/>
+          <circle cx="139.3" cy="110.5" r="1.3" fill="#fff"/>
+          <path d="M127 111c6-8 16-8 22 0" stroke="#3A2230" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+
+          <!-- nose -->
+          <path d="M120 118v13c0 3 3 4 6 3" stroke="#D79E83" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+
+          <!-- lips -->
+          <path d="M110 144c4-4 7-2 10 1 3-3 6-5 10-1-2 7-6 11-10 11s-8-4-10-11Z" fill="#C25668"/>
+
+          <!-- earrings -->
+          <circle cx="74" cy="126" r="3" fill="#C8A055"/>
+          <path d="M74 129v6" stroke="#C8A055" stroke-width="2"/>
+          <circle cx="74" cy="139" r="4.4" fill="#D9B471"/>
+          <circle cx="166" cy="126" r="3" fill="#C8A055"/>
+          <path d="M166 129v6" stroke="#C8A055" stroke-width="2"/>
+          <circle cx="166" cy="139" r="4.4" fill="#D9B471"/>
+
+          <!-- necklace -->
+          <path d="M104 196c5 8 11 12 16 12s11-4 16-12" stroke="#E2BE7C" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="120" cy="210" r="2.6" fill="#E2BE7C"/>
+
+          <!-- fringe -->
+          <path d="M75 104c-3-32 18-54 45-54s48 22 45 54c-9-17-22-27-36-29-7 13-28 22-54 29Z" fill="url(#pHair)"/>
+          <path d="M96 60c-8 10-12 22-12 34" stroke="#5E3A49" stroke-width="2" opacity=".5" fill="none" stroke-linecap="round"/>
+
+          <!-- side strands -->
+          <path d="M74 96c-6 34-16 66-32 90" stroke="#6A4353" stroke-width="3" opacity=".4" fill="none" stroke-linecap="round"/>
+          <path d="M166 96c6 34 16 66 32 90" stroke="#6A4353" stroke-width="3" opacity=".4" fill="none" stroke-linecap="round"/>
+
+          <!-- sparkles -->
+          <path d="M196 86l1.8 5.2L203 93l-5.2 1.8L196 100l-1.8-5.2L189 93l5.2-1.8Z" fill="#FFF6EA" opacity=".85"/>
+          <path d="M42 74l1.2 3.4L46.6 78l-3.4 1.2L42 82.6l-1.2-3.4L37.4 78l3.4-1.2Z" fill="#FFF6EA" opacity=".6"/>
+        </symbol>
+      </svg>
+
+
+      <main class="app">
+        <!-- ================= HOME ================= -->
+        <section class="screen is-active" id="screen-home" data-screen="home" role="tabpanel" aria-labelledby="tab-home">
+          <header class="topbar">
+            <div class="greeting">
+              <small>晚上好 · 10月20日 周一</small>
+              <h1>林知夏</h1>
+            </div>
+            <button class="avatar-btn" data-to="me" aria-label="查看我的资料">
+              <svg viewBox="64 46 112 112" preserveAspectRatio="xMidYMid slice"><use href="#portrait" width="240" height="300"/></svg>
+              <span class="dot" aria-hidden="true"></span>
+            </button>
+          </header>
+
+          <article class="hero">
+            <span class="tag">Today's edit</span>
+            <h3>温柔，<br />是你最锋利的底色</h3>
+            <p>今日灵感：奶油针织 × 酒红半裙，配一点金色。</p>
+            <button class="cta" data-to="look">
+              查看搭配
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </button>
+            <svg class="spark a" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16 6.2 9.8 0 8l6.2-1.8z"/></svg>
+            <svg class="spark b" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16 6.2 9.8 0 8l6.2-1.8z"/></svg>
+            <div class="hero-art" aria-hidden="true">
+              <svg viewBox="0 0 240 300"><use href="#portrait"/></svg>
+            </div>
+          </article>
+          <div class="section-head">
+            <h3>今日状态</h3>
+            <button type="button" data-toast="健康数据已同步">
+              查看全部
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+            </button>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <span class="ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5A5.8 5.8 0 0 1 6.5 2.5a5.7 5.7 0 1 0 7 7Z"/></svg></span>
+              <b>7.4<span>h</span></b>
+              <small>深度睡眠</small>
+              <div class="bar"><i style="--v:82%"></i></div>
+            </div>
+            <div class="stat">
+              <span class="ico sage"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 12.5c2.2-4.6 4.4-6.9 6.6-6.9 1.6 0 2.6 1 3.4 2.1"/><circle cx="11.6" cy="4.4" r="2.2"/></svg></span>
+              <b>6,820<span>步</span></b>
+              <small>今日步数</small>
+              <div class="bar"><i class="sage" style="--v:68%"></i></div>
+            </div>
+            <div class="stat">
+              <span class="ico gold"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2s4 4.3 4 7a4 4 0 0 1-8 0c0-2.7 4-7 4-7Z"/></svg></span>
+              <b>1.2<span>L</span></b>
+              <small>饮水量</small>
+              <div class="bar"><i class="gold" style="--v:55%"></i></div>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <h3>衣橱灵感</h3>
+            <button type="button" data-toast="更多灵感正在生成…">
+              全部
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+            </button>
+          </div>
+          <div class="hscroll" aria-label="穿搭灵感列表">
+            <article class="look">
+              <div class="thumb" style="--t1:#7C5560;--t2:#3E2A34">
+                <svg viewBox="0 0 64 84" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 13l-4 13-6 44h36l-6-44-4-13Z"/><path d="M24 13c2 4 5 6 8 6s6-2 8-6"/><path d="M20 26h24"/><path d="M32 20v50"/></svg>
+                <button class="heart" type="button" aria-pressed="false" aria-label="收藏：通勤剪影">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.6S1.8 9.8 1.8 5.9A3.4 3.4 0 0 1 8 3.6a3.4 3.4 0 0 1 6.2 2.3c0 3.9-6.2 7.7-6.2 7.7Z"/></svg>
+                </button>
+              </div>
+              <div class="cap"><b>通勤 · 剪影</b><small>利落 / 酒红半裙</small></div>
+            </article>
+            <article class="look">
+              <div class="thumb" style="--t1:#C9A6A0;--t2:#8A5C60">
+                <svg viewBox="0 0 64 84" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 22l4-9h20l4 9 8 10-8 6-4-6v42H22V32l-4 6-8-6Z"/><path d="M22 13l10 10 10-10"/></svg>
+                <button class="heart" type="button" aria-pressed="true" aria-label="取消收藏：约会奶油">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.6S1.8 9.8 1.8 5.9A3.4 3.4 0 0 1 8 3.6a3.4 3.4 0 0 1 6.2 2.3c0 3.9-6.2 7.7-6.2 7.7Z"/></svg>
+                </button>
+              </div>
+              <div class="cap"><b>约会 · 奶油</b><small>柔软 / 针织开衫</small></div>
+            </article>
+            <article class="look">
+              <div class="thumb" style="--t1:#88977E;--t2:#4A5745">
+                <svg viewBox="0 0 64 84" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 30h28l-3 34H21Z"/><path d="M24 30v-5a8 8 0 0 1 16 0v5"/><path d="M26 38v18M38 38v18"/></svg>
+                <button class="heart" type="button" aria-pressed="false" aria-label="收藏：周末苔绿">
+                  <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 13.6S1.8 9.8 1.8 5.9A3.4 3.4 0 0 1 8 3.6a3.4 3.4 0 0 1 6.2 2.3c0 3.9-6.2 7.7-6.2 7.7Z"/></svg>
+                </button>
+              </div>
+              <div class="cap"><b>周末 · 苔绿</b><small>松弛 / 软皮托特</small></div>
+            </article>
+          </div>
+
+          <figure class="quote">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M8.2 4.6c-3 1.3-4.6 3.6-4.6 6.6 0 2.5 1.4 4.2 3.4 4.2 1.8 0 3.1-1.2 3.1-2.9 0-1.6-1.1-2.7-2.6-2.7-.3 0-.6 0-.8.1.3-1.6 1.4-2.8 2.9-3.6Zm8 0c-3 1.3-4.6 3.6-4.6 6.6 0 2.5 1.4 4.2 3.4 4.2 1.8 0 3.1-1.2 3.1-2.9 0-1.6-1.1-2.7-2.6-2.7-.3 0-.6 0-.8.1.3-1.6 1.4-2.8 2.9-3.6Z"/></svg>
+            <p>风格不是穿给别人看的答案，<br />而是你与自己相处的方式。</p>
+            <cite>Her Daily · 每日一句</cite>
+          </figure>
+
+        </section>
+        <!-- ================= LOOK ================= -->
+        <section class="screen" id="screen-look" data-screen="look" role="tabpanel" aria-labelledby="tab-look">
+          <div class="screen-head">
+            <div class="row">
+              <div>
+                <h2>形象档案</h2>
+                <p>AI 已完成本周形象分析</p>
+              </div>
+              <button class="icon-btn" type="button" data-toast="档案编辑已开启" aria-label="编辑档案">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 3.6l3 3L7 16H4v-3Z"/><path d="M11.6 5.4l3 3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="portrait-card">
+            <span class="badge">
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16 6.2 9.8 0 8l6.2-1.8z"/></svg>
+              AI Portrait
+            </span>
+            <div class="art" style="height:318px">
+              <svg viewBox="0 0 240 300" preserveAspectRatio="xMidYMin slice" role="img" aria-label="林知夏的 AI 形象插画">
+                <use href="#portrait"/>
+              </svg>
+            </div>
+            <div class="cap">
+              <div>
+                <b>林知夏</b>
+                <small>28 · 上海 · 品牌策划</small>
+              </div>
+              <span class="num" aria-hidden="true">07</span>
+            </div>
+          </div>
+
+          <div class="tags" aria-label="风格标签">
+            <span class="tag-chip">温柔知性</span>
+            <span class="tag-chip">暖春型</span>
+            <span class="tag-chip muted">法式极简</span>
+            <span class="tag-chip muted">轻复古</span>
+          </div>
+
+          <div class="section-head">
+            <h3>个人色彩</h3>
+            <button type="button" data-toast="色彩诊断已重新生成">
+              重新诊断
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2l4 4-4 4"/></svg>
+            </button>
+          </div>
+          <div class="palette" aria-label="推荐色板，点击复制色值">
+            <button class="swatch" type="button" style="--c:#C2556B" data-copy="#C2556B" aria-label="复制色值 C2556B"><i aria-hidden="true"></i><span>#C2556B</span></button>
+            <button class="swatch" type="button" style="--c:#E8C9B8" data-copy="#E8C9B8" aria-label="复制色值 E8C9B8"><i aria-hidden="true"></i><span>#E8C9B8</span></button>
+            <button class="swatch" type="button" style="--c:#F1E4D4" data-copy="#F1E4D4" aria-label="复制色值 F1E4D4"><i aria-hidden="true"></i><span>#F1E4D4</span></button>
+            <button class="swatch" type="button" style="--c:#8A9A86" data-copy="#8A9A86" aria-label="复制色值 8A9A86"><i aria-hidden="true"></i><span>#8A9A86</span></button>
+            <button class="swatch" type="button" style="--c:#3F2C3C" data-copy="#3F2C3C" aria-label="复制色值 3F2C3C"><i aria-hidden="true"></i><span>#3F2C3C</span></button>
+          </div>
+
+          <dl class="info-list">
+            <div class="info-row"><dt>肤色类型</dt><dd>暖调 · 春季型</dd></div>
+            <div class="info-row"><dt>身形比例</dt><dd>沙漏型<em>165 cm</em></dd></div>
+            <div class="info-row"><dt>风格关键词</dt><dd>法式 / 极简 / 轻复古</dd></div>
+            <div class="info-row"><dt>本季重点</dt><dd>低饱和暖色<em>已更新</em></dd></div>
+          </dl>
+
+          <button class="btn" type="button" data-toast="正在为你生成 3 套试衣方案…">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l1.9 4.6L16.5 8l-4.6 1.9L10 14.5 8.1 9.9 3.5 8l4.6-1.4Z"/><path d="M15.5 13.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8Z"/></svg>
+            开始 AI 试衣
+          </button>
+          <button class="btn ghost" type="button" data-toast="已为你预约周六 14:00 的形象顾问">预约形象顾问</button>
+        </section>
+        <!-- ================= PLAN ================= -->
+        <section class="screen" id="screen-plan" data-screen="plan" role="tabpanel" aria-labelledby="tab-plan">
+          <div class="screen-head">
+            <div class="row">
+              <div>
+                <h2>今日日程</h2>
+                <p>把形象管理，变成温柔的日常</p>
+              </div>
+              <button class="icon-btn" type="button" data-toast="已新建一条日程" aria-label="新建日程">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 4.5v11M4.5 10h11"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="week" role="group" aria-label="选择日期">
+            <button class="day" type="button" aria-pressed="false" data-toast="已切换到 10月19日"><span>一</span><b>19</b><i class="mark off"></i></button>
+            <button class="day" type="button" aria-pressed="true" data-toast="今天 · 10月20日"><span>二</span><b>20</b><i class="mark"></i></button>
+            <button class="day" type="button" aria-pressed="false" data-toast="已切换到 10月21日"><span>三</span><b>21</b><i class="mark"></i></button>
+            <button class="day" type="button" aria-pressed="false" data-toast="已切换到 10月22日"><span>四</span><b>22</b><i class="mark off"></i></button>
+            <button class="day" type="button" aria-pressed="false" data-toast="已切换到 10月23日"><span>五</span><b>23</b><i class="mark"></i></button>
+            <button class="day" type="button" aria-pressed="false" data-toast="已切换到 10月24日"><span>六</span><b>24</b><i class="mark"></i></button>
+            <button class="day" type="button" aria-pressed="false" data-toast="已切换到 10月25日"><span>日</span><b>25</b><i class="mark off"></i></button>
+          </div>
+
+          <div class="progress-card">
+            <div class="ring" data-done="3" data-total="5">
+              <svg viewBox="0 0 74 74" aria-hidden="true">
+                <circle class="track" cx="37" cy="37" r="30" fill="none" stroke-width="7"/>
+                <circle class="val" id="ringVal" cx="37" cy="37" r="30" fill="none" stroke-width="7" stroke-dasharray="188.5" stroke-dashoffset="75.4"/>
+              </svg>
+              <b><span id="ringPct">60</span><small>%</small></b>
+            </div>
+            <div class="progress-copy">
+              <strong id="ringLabel">今日已完成 3 / 5</strong>
+              <span id="ringHint">再完成 2 项，就达成今日形象目标。</span>
+            </div>
+          </div>
+
+          <div class="tasks" id="tasks">
+            <button class="task" type="button" role="switch" aria-checked="true">
+              <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.4l2.6 2.6L10 3.4"/></svg></span>
+              <span class="body"><b>晨间护肤 · 防晒</b><small>护肤 / 3 个步骤</small></span>
+              <span class="time">08:00</span>
+            </button>
+            <button class="task" type="button" role="switch" aria-checked="true">
+              <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.4l2.6 2.6L10 3.4"/></svg></span>
+              <span class="body"><b>色彩诊断线上课</b><small>课程 / 第 4 讲 · 暖春型</small></span>
+              <span class="time">10:30</span>
+            </button>
+            <button class="task" type="button" role="switch" aria-checked="true">
+              <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.4l2.6 2.6L10 3.4"/></svg></span>
+              <span class="body"><b>试穿本周三套搭配</b><small>衣橱 / AI 已备好方案</small></span>
+              <span class="time">14:00</span>
+            </button>
+            <button class="task" type="button" role="switch" aria-checked="false">
+              <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.4l2.6 2.6L10 3.4"/></svg></span>
+              <span class="body"><b>与造型师视频沟通</b><small>顾问 / 15 分钟</small></span>
+              <span class="time">17:30</span>
+            </button>
+            <button class="task" type="button" role="switch" aria-checked="false">
+              <span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.4l2.6 2.6L10 3.4"/></svg></span>
+              <span class="body"><b>睡前拉伸 15 分钟</b><small>习惯 / 已连续 12 天</small></span>
+              <span class="time">22:00</span>
+            </button>
+          </div>
+        </section>
+        <!-- ================= ME ================= -->
+        <section class="screen" id="screen-me" data-screen="me" role="tabpanel" aria-labelledby="tab-me">
+          <div class="screen-head">
+            <div class="row">
+              <div>
+                <h2>我的</h2>
+                <p>愿你的每一天，都值得被好好打扮</p>
+              </div>
+              <button class="icon-btn" type="button" data-toast="设置已同步" aria-label="设置">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.5 6.5h13M3.5 13.5h13"/><circle cx="8" cy="6.5" r="1.9"/><circle cx="13" cy="13.5" r="1.9"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="profile-head">
+            <div class="avatar" aria-hidden="true">
+              <svg viewBox="64 46 112 112" preserveAspectRatio="xMidYMid slice"><use href="#portrait" width="240" height="300"/></svg>
+            </div>
+            <div class="who">
+              <b>林知夏</b>
+              <small>ID 2077 · 加入 Her 第 96 天</small>
+              <span class="vip">
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0l1.8 6.2L16 8l-6.2 1.8L8 16 6.2 9.8 0 8l6.2-1.8z"/></svg>
+                Signature Member
+              </span>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div><b>24</b><small>收藏灵感</small></div>
+            <div><b>18</b><small>已完成搭配</small></div>
+            <div><b>96</b><small>连续打卡</small></div>
+          </div>
+
+          <div class="menu">
+            <button class="menu-row" type="button" id="themeRow">
+              <span class="mi" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M15.8 11.6A6.4 6.4 0 0 1 8.4 4.2a6.4 6.4 0 1 0 7.4 7.4Z"/></svg></span>
+              <span class="label">深色模式<small>夜晚也可以温柔一点</small></span>
+              <span class="switch" id="themeSwitch" role="switch" aria-checked="false" aria-label="深色模式"><i></i></span>
+            </button>
+            <button class="menu-row" type="button" id="notifyRow">
+              <span class="mi" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.4 8.6a4.6 4.6 0 0 1 9.2 0c0 4 1.4 5 1.4 5H4s1.4-1 1.4-5Z"/><path d="M8.6 16.4a1.8 1.8 0 0 0 2.8 0"/></svg></span>
+              <span class="label">消息通知<small>日程提醒与灵感推送</small></span>
+              <span class="switch" id="notifySwitch" role="switch" aria-checked="true" aria-label="消息通知"><i></i></span>
+            </button>
+            <button class="menu-row" type="button" data-toast="隐私中心 · 原型演示">
+              <span class="mi" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.8l6 2.4v4.6c0 3.6-2.5 6.4-6 7.4-3.5-1-6-3.8-6-7.4V5.2Z"/><path d="M7.6 9.8l1.8 1.8 3.2-3.4"/></svg></span>
+              <span class="label">隐私与安全</span>
+              <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2l4 4-4 4"/></svg>
+            </button>
+            <button class="menu-row" type="button" data-toast="帮助中心 · 原型演示">
+              <span class="mi" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M8.2 7.8a1.9 1.9 0 1 1 2.6 1.7c-.6.3-.8.7-.8 1.2v.3"/><path d="M10 14.2v.1"/></svg></span>
+              <span class="label">帮助与反馈</span>
+              <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2l4 4-4 4"/></svg>
+            </button>
+            <button class="menu-row" type="button" data-toast="Her Studio · v1.0.0 Prototype">
+              <span class="mi" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.6l2 4.2 4.6.6-3.4 3.2.9 4.6L10 13.1 5.9 15.2l.9-4.6L3.4 7.4l4.6-.6Z"/></svg></span>
+              <span class="label">关于 Her<small>设计与开发 · Her Studio</small></span>
+              <span class="val">v1.0.0</span>
+            </button>
+          </div>
+
+          <p class="footer-note">Made with care · Her Studio</p>
+        </section>
+      </main>
+      <nav class="tabbar" role="tablist" aria-label="主导航">
+        <button class="tab" id="tab-home" role="tab" aria-selected="true" aria-controls="screen-home" data-target="home">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.6 11 3.4l7.5 6.2v8a1.4 1.4 0 0 1-1.4 1.4h-3.3v-5.4H8.2V19H4.9a1.4 1.4 0 0 1-1.4-1.4Z"/></svg>
+          <span>首页</span>
+          <span class="pip" aria-hidden="true"></span>
+        </button>
+        <button class="tab" id="tab-look" role="tab" aria-selected="false" aria-controls="screen-look" data-target="look">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.6l2.1 4.6 5 .7-3.6 3.5.9 5-4.4-2.4-4.4 2.4.9-5L3.9 7.9l5-.7Z"/><path d="M11 19.4v.1"/></svg>
+          <span>形象</span>
+          <span class="pip" aria-hidden="true"></span>
+        </button>
+        <button class="tab" id="tab-plan" role="tab" aria-selected="false" aria-controls="screen-plan" data-target="plan">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="4.6" width="15.6" height="14.2" rx="3"/><path d="M7.4 2.6v4M14.6 2.6v4M3.2 9h15.6M7.6 13h2M12.4 13h2M7.6 16h2"/></svg>
+          <span>日程</span>
+          <span class="pip" aria-hidden="true"></span>
+        </button>
+        <button class="tab" id="tab-me" role="tab" aria-selected="false" aria-controls="screen-me" data-target="me">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="7.4" r="3.8"/><path d="M3.8 19c.7-3.9 3.6-6.2 7.2-6.2s6.5 2.3 7.2 6.2"/></svg>
+          <span>我的</span>
+          <span class="pip" aria-hidden="true"></span>
+        </button>
+      </nav>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+      <script>
+        (function () {
+          'use strict';
+
+          var root = document.documentElement;
+          var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+          var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
+          var toastEl = document.getElementById('toast');
+          var toastTimer = null;
+
+          /* ---------- Toast ---------- */
+          function toast(message) {
+            toastEl.textContent = message;
+            toastEl.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+              toastEl.classList.remove('show');
+            }, 2000);
+          }
+
+          /* ---------- Screen switching ---------- */
+          function activate(name, shouldFocus) {
+            tabs.forEach(function (tab) {
+              var on = tab.dataset.target === name;
+              tab.setAttribute('aria-selected', String(on));
+              tab.tabIndex = on ? 0 : -1;
+            });
+            screens.forEach(function (screen) {
+              var on = screen.dataset.screen === name;
+              screen.classList.toggle('is-active', on);
+              screen.setAttribute('aria-hidden', String(!on));
+              if (on) screen.scrollTop = 0;
+            });
+            if (shouldFocus) {
+              var active = tabs.filter(function (t) {
+                return t.dataset.target === name;
+              })[0];
+              if (active) active.focus();
+            }
+          }
+          activate('home', false);
+
+          tabs.forEach(function (tab, index) {
+            tab.addEventListener('click', function () {
+              activate(tab.dataset.target, false);
+            });
+            tab.addEventListener('keydown', function (event) {
+              if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+              event.preventDefault();
+              var step = event.key === 'ArrowRight' ? 1 : -1;
+              var next = tabs[(index + step + tabs.length) % tabs.length];
+              activate(next.dataset.target, true);
+            });
+          });
+
+          /* ---------- Copy a colour value ---------- */
+          function copyHex(hex) {
+            var done = function () { toast('已复制色值 ' + hex); };
+            if (navigator.clipboard && window.isSecureContext) {
+              navigator.clipboard.writeText(hex).then(done, function () { toast('色值 ' + hex); });
+            } else {
+              var helper = document.createElement('textarea');
+              helper.value = hex;
+              helper.setAttribute('readonly', '');
+              helper.style.position = 'fixed';
+              helper.style.opacity = '0';
+              document.body.appendChild(helper);
+              helper.select();
+              try { document.execCommand('copy'); } catch (err) { /* ignore */ }
+              document.body.removeChild(helper);
+              done();
+            }
+          }
+          /* ---------- Delegated interactions ---------- */
+          document.addEventListener('click', function (event) {
+            var jump = event.target.closest('[data-to]');
+            if (jump) {
+              activate(jump.dataset.to, false);
+              return;
+            }
+            var copy = event.target.closest('[data-copy]');
+            if (copy) {
+              copyHex(copy.dataset.copy);
+              return;
+            }
+            var heart = event.target.closest('.heart');
+            if (heart) {
+              var liked = heart.getAttribute('aria-pressed') !== 'true';
+              var title = heart.closest('.look').querySelector('.cap b').textContent;
+              heart.setAttribute('aria-pressed', String(liked));
+              heart.setAttribute('aria-label', (liked ? '取消收藏：' : '收藏：') + title);
+              toast(liked ? '已收藏「' + title + '」' : '已取消收藏');
+              return;
+            }
+            var action = event.target.closest('[data-toast]');
+            if (action) {
+              toast(action.dataset.toast);
+            }
+          });
+
+          /* ---------- Tasks + progress ring ---------- */
+          var ringVal = document.getElementById('ringVal');
+          var ringPct = document.getElementById('ringPct');
+          var ringLabel = document.getElementById('ringLabel');
+          var ringHint = document.getElementById('ringHint');
+          var tasks = Array.prototype.slice.call(document.querySelectorAll('.task'));
+          var circumference = 2 * Math.PI * 30;
+
+          ringVal.setAttribute('stroke-dasharray', circumference.toFixed(1));
+
+          function refreshRing() {
+            var total = tasks.length;
+            var done = tasks.filter(function (task) {
+              return task.getAttribute('aria-checked') === 'true';
+            }).length;
+            var ratio = total ? done / total : 0;
+            ringVal.setAttribute('stroke-dashoffset', (circumference * (1 - ratio)).toFixed(1));
+            ringPct.textContent = String(Math.round(ratio * 100));
+            ringLabel.textContent = '今日已完成 ' + done + ' / ' + total;
+            ringHint.textContent = done === total
+              ? '全部完成，今天也很认真地在爱自己。'
+              : '再完成 ' + (total - done) + ' 项，就达成今日形象目标。';
+          }
+
+          tasks.forEach(function (task) {
+            task.addEventListener('click', function () {
+              var checked = task.getAttribute('aria-checked') !== 'true';
+              task.setAttribute('aria-checked', String(checked));
+              refreshRing();
+              if (checked) {
+                toast('完成：' + task.querySelector('.body b').textContent);
+              }
+            });
+          });
+          refreshRing();
+
+          /* ---------- Week strip ---------- */
+          var days = Array.prototype.slice.call(document.querySelectorAll('.day'));
+          days.forEach(function (day) {
+            day.addEventListener('click', function () {
+              days.forEach(function (item) {
+                item.setAttribute('aria-pressed', 'false');
+              });
+              day.setAttribute('aria-pressed', 'true');
+            });
+          });
+
+          /* ---------- Theme + notification switches ---------- */
+          var themeRow = document.getElementById('themeRow');
+          var themeSwitch = document.getElementById('themeSwitch');
+          var notifyRow = document.getElementById('notifyRow');
+          var notifySwitch = document.getElementById('notifySwitch');
+          var themeMeta = document.querySelector('meta[name="theme-color"]');
+
+          function setTheme(isDark) {
+            root.dataset.theme = isDark ? 'dark' : 'light';
+            themeSwitch.setAttribute('aria-checked', String(isDark));
+            if (themeMeta) themeMeta.setAttribute('content', isDark ? '#171219' : '#F6EFE8');
+          }
+
+          themeRow.addEventListener('click', function () {
+            var isDark = root.dataset.theme !== 'dark';
+            setTheme(isDark);
+            toast(isDark ? '已切换深色模式' : '已切换浅色模式');
+          });
+
+          notifyRow.addEventListener('click', function () {
+            var enabled = notifySwitch.getAttribute('aria-checked') !== 'true';
+            notifySwitch.setAttribute('aria-checked', String(enabled));
+            toast(enabled ? '消息通知已开启' : '消息通知已关闭');
+          });
+
+        })();
+      </script>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+
+
+
